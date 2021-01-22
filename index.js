@@ -1,15 +1,13 @@
 
 const request = require('request');
-const axios = require('axios');
 const APIkey = "dict.1.1.20170610T055246Z.0f11bdc42e7b693a.eefbde961e10106a4efa7d852287caa49ecc68cf";
 
-
+getFileFromServer();
 function getFileFromServer() {
     request('http://norvig.com/big.txt', (err, res, body) => {
         if (err) {
             console.log(err);
         }
-        console.log(res);
         var fileContents = body;
         getUniqueWordAndFrequency(fileContents, 10).then(function (outputJson) {
             console.log(JSON.stringify(outputJson));
@@ -22,25 +20,8 @@ function getFileFromServer() {
     });
 }
 
-async function getFileFromServerAxios() {
-    try {
-        axios.defaults.baseURL = 'http://www.norvig.com';
-        axios.defaults.headers.post['Content-Type'] ='text/plain';
-        axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-        const fileContents = await axios.get('/big.txt');
-        getUniqueWordAndFrequency(fileContents, 10).then(function (outputJson) {
-            console.log(JSON.stringify(outputJson));
-        }, function (err) {
-            console.error(err);
-        });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  function getWordDetails(wordElement) {
+function getWordDetails(wordElement) {
     return new Promise(function (resolve, reject) {
-        const fileContents = await axios.get('https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=' + APIkey + '&lang=en-en&text=' + wordElement);
         request('https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=' + APIkey + '&lang=en-en&text=' + wordElement, (err, res, body) => {
             if (err) {
                 reject(err);
@@ -122,6 +103,3 @@ function getUniqueWordAndFrequency(string, cutOff) {
         });
     });
 }
-
-
-  getFileFromServerAxios();
